@@ -40,8 +40,6 @@ public class MainLoader extends Application {
 
 	private static SongDatabaseAccessor songdb;
 
-	private static final Set<String> illegalSongs = new HashSet<String>();
-
 	private static Path bmsPath;
 
 	private static VersionChecker version;
