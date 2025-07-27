@@ -100,33 +100,32 @@ public class BMSResource {
 			bgaloaders.removeFirst();
 		}
 		
-		if(MainLoader.getIllegalSongCount() == 0) {
-			// Audio, BGAともキャッシュがあるため、何があっても全リロードする
-			final BMSModel bgamodel = config.getBga() == Config.BGA_ON || (config.getBga() == Config.BGA_AUTO && (mode.mode == BMSPlayerMode.Mode.AUTOPLAY || mode.mode == BMSPlayerMode.Mode.REPLAY)) ? model : null;
-			Thread bgaloader = new Thread(() -> {
-				try {
-					bga.abort();
-					bga.setModel(bgamodel);
-					bgaon = bgamodel != null;
-				} catch (Throwable e) {
-					Logger.getGlobal().severe(e.getClass().getName() + " : " + e.getMessage());
-					e.printStackTrace();
-				}
-			});
-			bgaloaders.addLast(bgaloader);
-			bgaloader.start();
-			Thread audioloader = new Thread(() -> {
-				try {
-					audio.abort();
-					audio.setModel(model);
-				} catch (Throwable e) {
-					Logger.getGlobal().severe(e.getClass().getName() + " : " + e.getMessage());
-					e.printStackTrace();
-				}
-			});
-			audioloaders.addLast(audioloader);
-			audioloader.start();			
-		}
+		// Audio, BGAともキャッシュがあるため、何があっても全リロードする
+		final BMSModel bgamodel = config.getBga() == Config.BGA_ON || (config.getBga() == Config.BGA_AUTO && (mode.mode == BMSPlayerMode.Mode.AUTOPLAY || mode.mode == BMSPlayerMode.Mode.REPLAY)) ? model : null;
+		Thread bgaloader = new Thread(() -> {
+			try {
+				bga.abort();
+				bga.setModel(bgamodel);
+				bgaon = bgamodel != null;
+			} catch (Throwable e) {
+				Logger.getGlobal().severe(e.getClass().getName() + " : " + e.getMessage());
+				e.printStackTrace();
+			}
+		});
+		bgaloaders.addLast(bgaloader);
+		bgaloader.start();
+		Thread audioloader = new Thread(() -> {
+			try {
+				audio.abort();
+				audio.setModel(model);
+			} catch (Throwable e) {
+				Logger.getGlobal().severe(e.getClass().getName() + " : " + e.getMessage());
+				e.printStackTrace();
+			}
+		});
+		
+		audioloaders.addLast(audioloader);
+		audioloader.start();			
 		return true;
 	}
 
